@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -8,11 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CustomFormField from "../CustomFormField";
 import { CustomProps } from "@/types";
 import SubmitButton from "../SubmitButton";
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
+import { UserFormValidation } from "@/lib/validation";
+import { useRouter } from "next/router";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -25,17 +21,28 @@ export enum FormFieldType {
 }
 
 function PatientForm() {
+  const rotuer = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof UserFormValidation>>({
+    resolver: zodResolver(UserFormValidation),
     defaultValues: {
-      username: "",
+      name: "",
+      email: "",
+      phone: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const onSubmit = async ({ email, name, phone }: z.infer<typeof UserFormValidation>) => {
+    setLoading(true);
+    try {
+      const userData = { email, name, phone };
+
+      const user = await createUser(userData);
+      rotuer.push(`/patient/${user.$id}/register`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const inputes: Array<CustomProps> = [
     { control: form.control, name: "name", label: "Full Name", fieldType: FormFieldType.INPUT, placeholder: "John Doe", iconAlt: "user", iconSrc: "/assets/icons/user.svg" },
