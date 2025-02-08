@@ -1,4 +1,7 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { Control } from "react-hook-form";
 
 declare type SearchParamProps = {
   params: { [key: string]: string };
@@ -54,3 +57,18 @@ declare type UpdateAppointmentParams = {
   appointment: Appointment;
   type: string;
 };
+
+declare interface CustomProps {
+  control: Control<any>;
+  fieldType: FormFieldType;
+  name: string;
+  label?: string;
+  placeholder?: string;
+  iconSrc?: string;
+  iconAlt?: string;
+  disabled?: boolean;
+  dateFormat?: string;
+  showTimeSelect?: boolean;
+  children?: ReactNode;
+  renderSkeleton?: (field: any) => ReactNode;
+}
