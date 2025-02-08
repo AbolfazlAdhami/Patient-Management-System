@@ -1,12 +1,13 @@
 "use client";
-import React from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import CustomFormField from "./CustomFormField";
+import CustomFormField from "../CustomFormField";
 import { CustomProps } from "@/types";
+import SubmitButton from "../SubmitButton";
 const formSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -24,6 +25,7 @@ export enum FormFieldType {
 }
 
 function PatientForm() {
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,7 +53,7 @@ function PatientForm() {
         {inputes.map((props) => (
           <CustomFormField {...props} key={props.name} />
         ))}
-        <Button type="submit">Submit</Button>
+        <SubmitButton isLoading={loading}>Submit</SubmitButton>
       </form>
     </Form>
   );

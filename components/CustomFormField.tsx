@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import PhoneInput from "react-phone-number-input";
 import { CustomProps } from "@/types";
-import { FormFieldType } from "./PatientForm";
+import { FormFieldType } from "./forms/PatientForm";
 
 const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   const { fieldType, iconSrc, iconAlt, placeholder, disabled } = props;
