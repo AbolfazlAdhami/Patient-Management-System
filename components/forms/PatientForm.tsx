@@ -1,9 +1,13 @@
 "use client";
+
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import CustomFormField from "../CustomFormField";
 import { CustomProps } from "@/types";
 import SubmitButton from "../SubmitButton";
@@ -22,6 +26,7 @@ export enum FormFieldType {
 
 function PatientForm() {
   const [loading, setLoading] = useState<boolean>(false);
+  const { push } = useRouter();
   const form = useForm<z.infer<typeof UserFormValidation>>({
     resolver: zodResolver(UserFormValidation),
     defaultValues: {
@@ -35,10 +40,9 @@ function PatientForm() {
     setLoading(true);
     try {
       const userData = { email, name, phone };
-      console.log(userData);
       const user = await createUser(userData);
       console.log(user);
-      // rotuer.push(`/patient/${user.$id}/register`);
+      push(`/patients/${user.$id}/register`);
     } catch (error) {
       console.log(error);
     }
