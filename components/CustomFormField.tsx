@@ -30,7 +30,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
     case PHONE_INPUT:
       return (
         <FormControl>
-          <PhoneInput defaultCountry="FI" onChange={field.onChange} international value={field.value as E164Number | undefined} withCountryCallingCode className="input-phone" />
+          <PhoneInput defaultCountry="IR" onChange={field.onChange} value={field.value as E164Number | undefined} international withCountryCallingCode className="input-phone" />
         </FormControl>
       );
     case CHECKBOX:

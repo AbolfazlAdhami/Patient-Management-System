@@ -8,7 +8,7 @@ import CustomFormField from "../CustomFormField";
 import { CustomProps } from "@/types";
 import SubmitButton from "../SubmitButton";
 import { UserFormValidation } from "@/lib/validation";
-import { useRouter } from "next/router";
+import { createUser } from "@/lib/actions/patient.actions";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -21,7 +21,6 @@ export enum FormFieldType {
 }
 
 function PatientForm() {
-  const rotuer = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof UserFormValidation>>({
     resolver: zodResolver(UserFormValidation),
@@ -36,12 +35,14 @@ function PatientForm() {
     setLoading(true);
     try {
       const userData = { email, name, phone };
-
+      console.log(userData);
       const user = await createUser(userData);
-      rotuer.push(`/patient/${user.$id}/register`);
+      console.log(user);
+      // rotuer.push(`/patient/${user.$id}/register`);
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   };
 
   const inputes: Array<CustomProps> = [
