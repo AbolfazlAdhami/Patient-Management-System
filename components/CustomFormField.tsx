@@ -8,6 +8,7 @@ import Image from "next/image";
 import PhoneInput from "react-phone-number-input";
 import { CustomProps } from "@/types";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
+import { Textarea } from "./ui/textarea";
 export enum FormFieldType {
   INPUT = "input",
   TEXTAREA = "textarea",
@@ -34,7 +35,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
     case TEXTAREA:
       return (
         <FormControl>
-          <textarea className="shad-textArea" placeholder={placeholder} disabled={disabled} {...field} />
+          <Textarea className="shad-textArea" placeholder={placeholder} disabled={disabled} {...field} />
         </FormControl>
       );
     case PHONE_INPUT:
@@ -57,7 +58,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
             <ReactDatePicker
               showTimeSelect={props.showTimeSelect ?? false}
               selected={field.value}
-              onChange={(date: Date) => field.onChange(date)}
+              onChange={(date: Date | null) => field.onChange(date)}
               timeInputLabel="Time:"
               dateFormat={props.dateFormat ?? "MM/dd/yyyy"}
               wrapperClassName="date-picker"
