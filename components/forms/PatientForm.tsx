@@ -13,6 +13,7 @@ import { CustomProps } from "@/types";
 import SubmitButton from "../SubmitButton";
 import { UserFormValidation } from "@/lib/validation";
 import { createUser } from "@/lib/actions/patient.actions";
+import { patientsInputes } from "@/lib/Inputes";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -49,11 +50,7 @@ function PatientForm() {
     setLoading(false);
   };
 
-  const inputes: Array<CustomProps> = [
-    { control: form.control, name: "name", label: "Full Name", fieldType: FormFieldType.INPUT, placeholder: "John Doe", iconAlt: "user", iconSrc: "/assets/icons/user.svg" },
-    { control: form.control, name: "email", label: "Email", fieldType: FormFieldType.INPUT, placeholder: "john@gmail.com", iconAlt: "email", iconSrc: "/assets/icons/email.svg" },
-    { control: form.control, name: "phone", label: "Phone Number", fieldType: FormFieldType.PHONE_INPUT, placeholder: "(+98) 999 111 2233" },
-  ];
+  const inputes: Array<CustomProps> = patientsInputes({ control: form.control });
 
   return (
     <Form {...form}>
