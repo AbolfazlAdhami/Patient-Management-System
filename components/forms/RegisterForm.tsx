@@ -39,7 +39,7 @@ const RegisterForm = ({ user }: { user: User }) => {
   };
 
   const { control, handleSubmit } = form;
-  const { TEXTAREA, DATE_PICKER, INPUT, PHONE_INPUT, SELECT, SKELETON } = FormFieldType;
+  const { TEXTAREA, DATE_PICKER, INPUT, PHONE_INPUT, SELECT, SKELETON, CHECKBOX } = FormFieldType;
   return (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 flex-1">
@@ -158,7 +158,26 @@ const RegisterForm = ({ user }: { user: User }) => {
             )}
           />
         </section>
-
+        <section className="space-y-4">
+          <div className="mb-6 space-y-1">
+            <h2 className="sub-header">Consent and Privacy</h2>
+            <CustomFormField fieldType={CHECKBOX} control={control} name="treatmentConsent" label="I consent to receive treatment for my health condition." />
+            <CustomFormField
+              fieldType={CHECKBOX}
+              control={control}
+              name="disclosureConsent"
+              label="I consent to the use and disclosure of my health
+            information for treatment purposes."
+            />
+            <CustomFormField
+              fieldType={CHECKBOX}
+              control={control}
+              name="privacyConsent"
+              label="I acknowledge that I have reviewed and agree to the
+            privacy policy"
+            />
+          </div>
+        </section>
         <SubmitButton isLoading={loading}>Submit</SubmitButton>
       </form>
     </FormProvider>
