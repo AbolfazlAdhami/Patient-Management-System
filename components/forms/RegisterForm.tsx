@@ -132,6 +132,32 @@ const RegisterForm = ({ user }: { user: User }) => {
           </div>
         </section>
 
+        <section className="space-y-4">
+          <div className="mb-6 space-y-1">
+            <h2 className="sub-header">Identification and Verfication</h2>
+          </div>
+          <CustomFormField fieldType={FormFieldType.SELECT} control={form.control} name="identificationType" label="Identification Type" placeholder="Select identification type">
+            {IdentificationTypes.map((type, i) => (
+              <SelectItem key={type + i} value={type}>
+                {type}
+              </SelectItem>
+            ))}
+          </CustomFormField>
+
+          <CustomFormField fieldType={FormFieldType.INPUT} control={form.control} name="identificationNumber" label="Identification Number" placeholder="123456789" />
+
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="identificationDocument"
+            label="Scanned Copy of Identification Document"
+            renderSkeleton={(field) => (
+              <FormControl>
+                <FileUploader files={field.value} onChange={field.onChange} />
+              </FormControl>
+            )}
+          />
+        </section>
 
         <SubmitButton isLoading={loading}>Submit</SubmitButton>
       </form>
