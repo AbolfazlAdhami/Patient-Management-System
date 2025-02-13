@@ -62,7 +62,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           <Image src="/assets/icons/calendar.svg" height={24} width={24} alt="calender" className="ml-2" />
           <FormControl>
             <ReactDatePicker
-              showTimeSelect={props.showTimeSelect ?? false}
+              showTimeSelect={props.showTimeSelect ?? false} 
               selected={field.value}
               onChange={(date: Date | null) => field.onChange(date)}
               timeInputLabel="Time:"

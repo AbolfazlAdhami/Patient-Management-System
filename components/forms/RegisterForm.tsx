@@ -17,6 +17,7 @@ import { FormControl } from "../ui/form";
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import FileUploader from "../FileUploader";
+import { registerPatient } from "@/lib/actions/patient.actions";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,9 +34,72 @@ const RegisterForm = ({ user }: { user: User }) => {
 
   const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
     setLoading(true);
-    console.log(values);
-    return;
-    push("/");
+    let formData;
+    const { $id, email, name, phone } = user;
+    const {
+      address,
+      birthDate,
+      disclosureConsent,
+      emergencyContactName,
+      emergencyContactNumber,
+      gender,
+      insurancePolicyNumber,
+      insuranceProvider,
+      occupation,
+      primaryPhysician,
+      privacyConsent,
+      treatmentConsent,
+      allergies,
+      pastMedicalHistory,
+      currentMedication,
+      familyMedicalHistory,
+      identificationDocument,
+      identificationNumber,
+      identificationType,
+    } = values;
+    if (values.identificationDocument && values.identificationDocument.length > 0) {
+      const blobFile = new Blob([values.identificationDocument[0]], {
+        type: values.identificationDocument[0].type,
+      });
+      formData = new FormData();
+      formData.append("blobFile", blobFile);
+      formData.append("fileName", values.identificationDocument[0].name);
+    }
+    try {
+      const patient = {
+        userId: $id,
+        name,
+        email,
+        phone,
+        birthDate,
+        address,
+        gender,
+        disclosureConsent,
+        emergencyContactName,
+        emergencyContactNumber,
+        insurancePolicyNumber,
+        insuranceProvider,
+        occupation,
+        primaryPhysician,
+        privacyConsent,
+        treatmentConsent,
+        allergies,
+        pastMedicalHistory,
+        currentMedication,
+        familyMedicalHistory,
+        identificationNumber,
+        identificationType,
+        identificationDocument: identificationDocument ? formData : undefined,
+      };
+
+      const newPatient = await registerPatient(patient);
+      if (newPatient) {
+        push(`/patients/${user.$id}/new-appointment`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
   };
 
   const { control, handleSubmit } = form;
@@ -101,8 +165,8 @@ const RegisterForm = ({ user }: { user: User }) => {
           <CustomFormField fieldType={SELECT} control={control} name="primaryPhysician" label="Primary care physician" placeholder="Select a physician">
             {Doctors.map((doctor, i) => (
               <SelectItem key={doctor.name + i} value={doctor.name}>
-                <div className="flex cursor-pointer items-center gap-2">
-                  <Image src={doctor.image} width={32} height={32} alt="doctor" className="rounded-full border border-dark-500" />
+                <div className="flex cursor-pointer items-center gap-2 bg-dark-200 p-1 border border-dark-600  rounded-full">
+                  <Image src={doctor.image} width={32} height={32} alt="doctor" className="rounded-full border border-dark-500 " />
                   <p>{doctor.name}</p>
                 </div>
               </SelectItem>
@@ -161,22 +225,22 @@ const RegisterForm = ({ user }: { user: User }) => {
         <section className="space-y-4">
           <div className="mb-6 space-y-1">
             <h2 className="sub-header">Consent and Privacy</h2>
-            <CustomFormField fieldType={CHECKBOX} control={control} name="treatmentConsent" label="I consent to receive treatment for my health condition." />
-            <CustomFormField
-              fieldType={CHECKBOX}
-              control={control}
-              name="disclosureConsent"
-              label="I consent to the use and disclosure of my health
-            information for treatment purposes."
-            />
-            <CustomFormField
-              fieldType={CHECKBOX}
-              control={control}
-              name="privacyConsent"
-              label="I acknowledge that I have reviewed and agree to the
-            privacy policy"
-            />
           </div>
+          <CustomFormField fieldType={CHECKBOX} control={control} name="treatmentConsent" label="I consent to receive treatment for my health condition." />
+          <CustomFormField
+            fieldType={CHECKBOX}
+            control={control}
+            name="disclosureConsent"
+            label="I consent to the use and disclosure of my health
+            information for treatment purposes."
+          />
+          <CustomFormField
+            fieldType={CHECKBOX}
+            control={control}
+            name="privacyConsent"
+            label="I acknowledge that I have reviewed and agree to the
+            privacy policy"
+          />
         </section>
         <SubmitButton isLoading={loading}>Submit</SubmitButton>
       </form>
