@@ -18,6 +18,8 @@ import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import FileUploader from "../FileUploader";
 import { registerPatient } from "@/lib/actions/patient.actions";
+import { toast } from "react-toastify";
+import { WarningMessages } from "@/configs/Messages";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -93,6 +95,7 @@ const RegisterForm = ({ user }: { user: User }) => {
       }
     } catch (error) {
       console.log(error);
+      toast.warn(WarningMessages.tryAgain);
     }
     setLoading(false);
   };

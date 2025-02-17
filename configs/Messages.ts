@@ -7,7 +7,7 @@ export const ErrorMessages = {
   userNotFound: "User Not Founded",
 };
 export const WarningMessages = {
-    tryAgain:"Server Not Working Try Again"
+    tryAgain:"We Have Problem Try Again"
 };
 
 export const InfoMessages = {
