@@ -8,13 +8,10 @@ import { parseStringify } from "../utils";
 export const createUser = async (user: CreateUserParams) => {
   try {
     const newUser = await users.create(ID.unique(), user.email, user.phone, undefined, user.name);
-    console.log(newUser);
     return parseStringify(newUser);
   } catch (error: any) {
-    console.log(error);
     if (error && error?.code === 409) {
-      const existingUsers = await users.list([Query.equal("email", [user.email])]);
-      console.log(existingUsers);
+      const existingUsers = await users.list([]);
       if (existingUsers.total === 1) return existingUsers.users[0];
       return null;
     }
@@ -25,7 +22,6 @@ export const createUser = async (user: CreateUserParams) => {
 export const getUser = async (userId: string) => {
   try {
     const user = await users.get(userId);
-
     return parseStringify(user);
   } catch (error) {
     console.log(error);
@@ -37,14 +33,16 @@ export const registerPatient = async ({ identificationDocument, ...patient }: Re
   try {
     // Upload file ->  // https://appwrite.io/docs/references/cloud/client-web/storage#createFile
     let file;
+    console.log(identificationDocument);
+    return;
     if (identificationDocument) {
-      const inputFile = identificationDocument && new File(identificationDocument?.get("blobFile"), identificationDocument?.get("fileName"));
+      const inputFile = identificationDocument && new File(identificationDocument.get("blobFile"), identificationDocument?.get("fileName"));
       file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
     }
 
     const newPatient = await database.createDocument(DATABASE_ID!, PATIENT_COLLECTION_ID!, ID.unique(), {
-      identificationDocument: file?.$id ? file?.$id : null,
-      identificationDocumentUrl: file?.$id ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}` : null,
+      // identificationDocument: file?.$id ? file?.$id : null,
+      // identificationDocumentUrl: file?.$id ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}` : null,
       ...patient,
     });
 

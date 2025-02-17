@@ -14,6 +14,8 @@ import SubmitButton from "../SubmitButton";
 import { UserFormValidation } from "@/lib/validation";
 import { createUser } from "@/lib/actions/patient.actions";
 import { patientsInputes } from "@/lib/Inputes";
+import { toast } from "react-toastify";
+import { ErrorMessages, SuccessMessages } from "@/configs/Messages";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -42,10 +44,11 @@ function PatientForm() {
     try {
       const userData = { email, name, phone };
       const user = await createUser(userData);
-      console.log(user);
       push(`/patients/${user.$id}/register`);
+      toast.success(SuccessMessages.login);
     } catch (error) {
       console.log(error);
+      toast.error(ErrorMessages.userNotFound);
     }
     setLoading(false);
   };

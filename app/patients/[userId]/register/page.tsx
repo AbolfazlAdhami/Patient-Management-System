@@ -3,9 +3,23 @@ import RegisterForm from "@/components/forms/RegisterForm";
 import { getUser } from "@/lib/actions/patient.actions";
 import { SearchParamProps } from "@/types";
 import Image from "next/image";
-
+import { toast } from "react-toastify";
 const Register: FC<SearchParamProps> = async ({ params: { userId } }: SearchParamProps) => {
   const user = await getUser(userId);
+  console.log(user);
+  if (!user) {
+    toast.success("🦄 Wow so easy!", {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+    return <></>;
+  }
   return (
     <div className="flex h-screen max-h-screen ">
       <section className="container remove-scrollbar">

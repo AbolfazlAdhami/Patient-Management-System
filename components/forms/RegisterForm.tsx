@@ -39,7 +39,6 @@ const RegisterForm = ({ user }: { user: User }) => {
     const {
       address,
       birthDate,
-      disclosureConsent,
       emergencyContactName,
       emergencyContactNumber,
       gender,
@@ -48,7 +47,6 @@ const RegisterForm = ({ user }: { user: User }) => {
       occupation,
       primaryPhysician,
       privacyConsent,
-      treatmentConsent,
       allergies,
       pastMedicalHistory,
       currentMedication,
@@ -74,15 +72,13 @@ const RegisterForm = ({ user }: { user: User }) => {
         birthDate,
         address,
         gender,
-        disclosureConsent,
+        privacyConsent,
         emergencyContactName,
         emergencyContactNumber,
         insurancePolicyNumber,
         insuranceProvider,
         occupation,
         primaryPhysician,
-        privacyConsent,
-        treatmentConsent,
         allergies,
         pastMedicalHistory,
         currentMedication,
@@ -91,7 +87,6 @@ const RegisterForm = ({ user }: { user: User }) => {
         identificationType,
         identificationDocument: identificationDocument ? formData : undefined,
       };
-
       const newPatient = await registerPatient(patient);
       if (newPatient) {
         push(`/patients/${user.$id}/new-appointment`);
