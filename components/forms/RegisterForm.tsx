@@ -1,5 +1,4 @@
 "use client";
-
 import { Doctors, GenderOptions, IdentificationTypes, PatientFormDefaultValues } from "@/constant";
 import { PatientFormValidation } from "@/lib/validation";
 import { User } from "@/types";

@@ -33,16 +33,14 @@ export const registerPatient = async ({ identificationDocument, ...patient }: Re
   try {
     // Upload file ->  // https://appwrite.io/docs/references/cloud/client-web/storage#createFile
     let file;
-    console.log(identificationDocument);
-    return;
     if (identificationDocument) {
       const inputFile = identificationDocument && new File(identificationDocument.get("blobFile"), identificationDocument?.get("fileName"));
       file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
     }
 
     const newPatient = await database.createDocument(DATABASE_ID!, PATIENT_COLLECTION_ID!, ID.unique(), {
-      // identificationDocument: file?.$id ? file?.$id : null,
-      // identificationDocumentUrl: file?.$id ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}` : null,
+      identificationDocument: file?.$id ? file?.$id : null,
+      identificationDocumentUrl: file?.$id ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}` : null,
       ...patient,
     });
 
@@ -53,4 +51,12 @@ export const registerPatient = async ({ identificationDocument, ...patient }: Re
 };
 
 // GET PATIENT
-export const getPatient = async (userID: string) => {};
+export const getPatient = async (userID: string) => {
+  try {
+    const patients = await database.listDocuments(DATABASE_ID!, PATIENT_COLLECTION_ID!, [Query.equal("userId", [userID])]);
+
+    return parseStringify(patients.documents[0]);
+  } catch (error) {
+    console.error("An error occurred while retrieving the patient details:", error);
+  }
+};
