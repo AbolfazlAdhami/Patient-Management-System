@@ -3,8 +3,10 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import "react-phone-number-input/style.css";
 import "react-datepicker/dist/react-datepicker.css";
+import "react-toastify/dist/ReactToastify.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastContainer } from "react-toastify";
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -28,6 +30,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
         </ThemeProvider>
+        <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick pauseOnFocusLoss draggable pauseOnHover theme="colored" />
       </body>
     </html>
   );
