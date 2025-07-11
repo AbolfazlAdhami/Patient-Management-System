@@ -1,5 +1,4 @@
 "use client";
-
 import { Doctors, GenderOptions, IdentificationTypes, PatientFormDefaultValues } from "@/constant";
 import { PatientFormValidation } from "@/lib/validation";
 import { User } from "@/types";
@@ -18,6 +17,8 @@ import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import FileUploader from "../FileUploader";
 import { registerPatient } from "@/lib/actions/patient.actions";
+import { toast } from "react-toastify";
+import { WarningMessages } from "@/configs/Messages";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -39,7 +40,6 @@ const RegisterForm = ({ user }: { user: User }) => {
     const {
       address,
       birthDate,
-      disclosureConsent,
       emergencyContactName,
       emergencyContactNumber,
       gender,
@@ -48,7 +48,6 @@ const RegisterForm = ({ user }: { user: User }) => {
       occupation,
       primaryPhysician,
       privacyConsent,
-      treatmentConsent,
       allergies,
       pastMedicalHistory,
       currentMedication,
@@ -74,15 +73,13 @@ const RegisterForm = ({ user }: { user: User }) => {
         birthDate,
         address,
         gender,
-        disclosureConsent,
+        privacyConsent,
         emergencyContactName,
         emergencyContactNumber,
         insurancePolicyNumber,
         insuranceProvider,
         occupation,
         primaryPhysician,
-        privacyConsent,
-        treatmentConsent,
         allergies,
         pastMedicalHistory,
         currentMedication,
@@ -91,13 +88,13 @@ const RegisterForm = ({ user }: { user: User }) => {
         identificationType,
         identificationDocument: identificationDocument ? formData : undefined,
       };
-
       const newPatient = await registerPatient(patient);
       if (newPatient) {
         push(`/patients/${user.$id}/new-appointment`);
       }
     } catch (error) {
       console.log(error);
+      toast.warn(WarningMessages.tryAgain);
     }
     setLoading(false);
   };
