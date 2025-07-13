@@ -27,7 +27,7 @@ export enum FormFieldType {
   SKELETON = "skeleton",
 }
 
-function PatientForm() {
+export function PatientForm() {
   const [loading, setLoading] = useState<boolean>(false);
   const { push } = useRouter();
   const form = useForm<z.infer<typeof UserFormValidation>>({
@@ -70,5 +70,3 @@ function PatientForm() {
     </Form>
   );
 }
-
-export default PatientForm;
