@@ -1,25 +1,18 @@
 import React, { FC } from "react";
-import RegisterForm from "@/components/forms/RegisterForm";
-import { getUser } from "@/lib/actions/patient.actions";
-import { SearchParamProps } from "@/types";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { redirect } from "next/navigation";
+
+import RegisterForm from "@/components/forms/RegisterForm";
+import { getUser, getPatient } from "@/lib/actions/patient.actions";
+import { SearchParamProps } from "@/types";
+
 const Register: FC<SearchParamProps> = async ({ params: { userId } }: SearchParamProps) => {
   const user = await getUser(userId);
-  console.log(user);
-  if (!user) {
-    toast.success("🦄 Wow so easy!", {
-      position: "bottom-left",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
-    return <></>;
-  }
+  const patient = await getPatient(user);
+
+  if (patient) redirect(`/patients/${userId}/new-appointment`);
+
   return (
     <div className="flex h-screen max-h-screen ">
       <section className="container remove-scrollbar">
