@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,7 +12,6 @@ export default function Home({ searchParams }: SearchParamProps) {
   return (
     <div className="flex h-screen max-h-screen">
       {isAdmin && <PasskeyModal />}
-
       <section className="container remove-scrollbar my-auto">
         <div className="sub-container max-w-[490px]">
           <Image src={"/assets/icons/logo-full.svg"} alt="Full Logo" width={1000} height={1000} className="mb-12 h-10 w-fit-content mx-auto" />

@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import Image from "next/image";
-import { toast } from "react-toastify";
 import { redirect } from "next/navigation";
 
 import RegisterForm from "@/components/forms/RegisterForm";

@@ -8,8 +8,6 @@ import "react-phone-number-input/style.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { cn } from "@/lib/utils";
 
-//
-
 const fontSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -27,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${cn(["min-h-screen  bg-dark-400 font-sans antialiased"])} ${fontSans.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
