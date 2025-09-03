@@ -7,7 +7,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescript
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { decryptKey, encryptKey } from "@/lib/utils";
 
-export const PasskeyModal = () => {
+const PasskeyModal = () => {
   const router = useRouter();
   const path = usePathname();
   const [open, setOpen] = useState(false);
@@ -26,7 +26,7 @@ export const PasskeyModal = () => {
         setOpen(true);
       }
     }
-  }, [encryptedKey]);
+  }, [encryptedKey, path, router]);
 
   const closeModal = () => {
     setOpen(false);
@@ -79,3 +79,5 @@ export const PasskeyModal = () => {
     </AlertDialog>
   );
 };
+
+export default PasskeyModal;

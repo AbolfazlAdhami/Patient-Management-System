@@ -11,15 +11,17 @@ import { Form, FormControl } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SelectItem } from "@/components/ui/select";
-import { Doctors, GenderOptions, IdentificationTypes, PatientFormDefaultValues } from "@/constants";
+import { Doctors, GenderOptions, IdentificationTypes, PatientFormDefaultValues } from "@/constant";
 import { registerPatient } from "@/lib/actions/patient.actions";
 import { PatientFormValidation } from "@/lib/validation";
 
 import "react-datepicker/dist/react-datepicker.css";
 import "react-phone-number-input/style.css";
-import CustomFormField, { FormFieldType } from "../CustomFormField";
-import { FileUploader } from "../FileUploader";
+import CustomFormField from "../CustomFormField";
+import FileUploader from "../FileUploader";
 import SubmitButton from "../SubmitButton";
+import { User } from "@/types";
+import { FormFieldType } from "@/lib/Inputs";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
@@ -90,7 +92,6 @@ const RegisterForm = ({ user }: { user: User }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-12">
- 
         <section className="space-y-6">
           <div className="mb-9 space-y-1">
             <h2 className="sub-header">Personal Information</h2>
@@ -102,15 +103,7 @@ const RegisterForm = ({ user }: { user: User }) => {
 
           {/* EMAIL & PHONE */}
           <div className="flex flex-col gap-6 xl:flex-row">
-            <CustomFormField
-              fieldType={FormFieldType.INPUT}
-              control={form.control}
-              name="email"
-              label="Email address"
-              placeholder="johndoe@gmail.com"
-              iconSrc="/assets/icons/email.svg"
-              iconAlt="email"
-            />
+            <CustomFormField fieldType={FormFieldType.INPUT} control={form.control} name="email" label="Email address" placeholder="johndoe@gmail.com" iconSrc="/assets/icons/email.svg" iconAlt="email" />
 
             <CustomFormField fieldType={FormFieldType.PHONE_INPUT} control={form.control} name="phone" label="Phone Number" placeholder="(555) 123-4567" />
           </div>
@@ -197,19 +190,13 @@ const RegisterForm = ({ user }: { user: User }) => {
               placeholder="Mother had brain cancer, Father has hypertension"
             />
 
-            <CustomFormField
-              fieldType={FormFieldType.TEXTAREA}
-              control={form.control}
-              name="pastMedicalHistory"
-              label="Past medical history"
-              placeholder="Appendectomy in 2015, Asthma diagnosis in childhood"
-            />
+            <CustomFormField fieldType={FormFieldType.TEXTAREA} control={form.control} name="pastMedicalHistory" label="Past medical history" placeholder="Appendectomy in 2015, Asthma diagnosis in childhood" />
           </div>
         </section>
 
         <section className="space-y-6">
           <div className="mb-9 space-y-1">
-            <h2 className="sub-header">Identification and Verfication</h2>
+            <h2 className="sub-header">Identification and Verification</h2>
           </div>
 
           <CustomFormField fieldType={FormFieldType.SELECT} control={form.control} name="identificationType" label="Identification Type" placeholder="Select identification type">

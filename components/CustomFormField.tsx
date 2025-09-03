@@ -6,19 +6,11 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import PhoneInput from "react-phone-number-input";
-import { CustomProps } from "@/types";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Textarea } from "./ui/textarea";
 import { Checkbox } from "./ui/checkbox";
-export enum FormFieldType {
-  INPUT = "input",
-  TEXTAREA = "textarea",
-  PHONE_INPUT = "phoneInput",
-  CHECKBOX = "checkbox",
-  DATE_PICKER = "datePicker",
-  SELECT = "select",
-  SKELETON = "skeleton",
-}
+import { FormFieldType } from "@/lib/Inputs";
+import { CustomProps } from "@/types";
 
 const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   const { fieldType, iconSrc, iconAlt, placeholder, disabled } = props;
@@ -62,7 +54,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           <Image src="/assets/icons/calendar.svg" height={24} width={24} alt="calender" className="ml-2" />
           <FormControl>
             <ReactDatePicker
-              showTimeSelect={props.showTimeSelect ?? false} 
+              showTimeSelect={props.showTimeSelect ?? false}
               selected={field.value}
               onChange={(date: Date | null) => field.onChange(date)}
               timeInputLabel="Time:"

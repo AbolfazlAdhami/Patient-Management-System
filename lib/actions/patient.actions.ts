@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { Query, ID, InputFile } from "node-appwrite";
-
 import { BUCKET_ID, DATABASE_ID, ENDPOINT, PATIENT_COLLECTION_ID, PROJECT_ID, databases, storage, users } from "../appwrite.config";
-
 import { parseStringify } from "../utils";
 import { CreateUserParams, RegisterUserParams } from "@/types";
 
@@ -57,7 +56,6 @@ export const registerPatient = async ({ identificationDocument, ...patient }: Re
     });
 
     return parseStringify(newPatient);
-    
   } catch (error) {
     console.error("An error occurred while creating a new patient:", error);
   }

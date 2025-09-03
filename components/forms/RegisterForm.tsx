@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { z } from "zod";
 import SubmitButton from "../SubmitButton";
-import { FormFieldType } from "./PatientForm";
+ 
 import CustomFormField from "../CustomFormField";
 import { FormControl } from "../ui/form";
 import { SelectItem } from "../ui/select";
@@ -19,6 +19,7 @@ import FileUploader from "../FileUploader";
 import { registerPatient } from "@/lib/actions/patient.actions";
 import { toast } from "react-toastify";
 import { WarningMessages } from "@/configs/Messages";
+import { FormFieldType } from "@/lib/Inputs";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const [loading, setLoading] = useState<boolean>(false);

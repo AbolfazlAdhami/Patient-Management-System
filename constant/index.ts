@@ -1,3 +1,5 @@
+import { Gender } from "@/types";
+
 export const GenderOptions = ["Male", "Female"];
 
 export const PatientFormDefaultValues = {
