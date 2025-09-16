@@ -8,7 +8,8 @@ import { SearchParamProps } from "@/types";
 
 const Register: FC<SearchParamProps> = async ({ params: { userId } }: SearchParamProps) => {
   const user = await getUser(userId);
-  const patient = await getPatient(user);
+   const userID = typeof user === "string" ? user : user.$id;
+   const patient = await getPatient(userID);
 
   if (patient) redirect(`/patients/${userId}/new-appointment`);
 

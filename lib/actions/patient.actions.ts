@@ -32,7 +32,7 @@ export const getUser = async (userId: string) => {
   }
 };
 
-// REGISTER PTIENT
+// REGISTER PATIENT
 export const registerPatient = async ({ identificationDocument, ...patient }: RegisterUserParams) => {
   try {
     // Upload file ->  // https://appwrite.io/docs/references/cloud/client-web/storage#createFile
@@ -65,6 +65,8 @@ export const registerPatient = async ({ identificationDocument, ...patient }: Re
 export const getPatient = async (userID: string) => {
   try {
     const patients = await databases.listDocuments(DATABASE_ID!, PATIENT_COLLECTION_ID!, [Query.equal("userId", [userID])]);
+
+    if (patients.documents.length == 0) return null;
 
     return parseStringify(patients.documents[0]);
   } catch (error) {
