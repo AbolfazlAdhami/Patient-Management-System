@@ -40,17 +40,27 @@ export const registerPatient = async ({ identificationDocument, ...patient }: Re
     if (identificationDocument) {
       const blob = identificationDocument.get("blobFile");
       const fileName = identificationDocument?.get("fileName");
-
+      /*1. Use InputFile.fromBlob (correct for browser / Next.js client)
+          Appwrite provides fromBlob for exactly this:*/
       if (blob instanceof Blob && typeof fileName == "string") {
-        const inputFile = identificationDocument && InputFile.fromBlob(blob, fileName);
-
+        const inputFile = InputFile.fromBlob(blob, fileName);
         file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
       }
+
+      /*2. Convert Blob → Buffer (if running in Node.js)
+            If this is server-only code (Node.js runtime), convert the blob first:
+       if (blob instanceof Blob && typeof fileName == "string") {
+         const arrayBuffer = await blob.arrayBuffer();
+         const buffer = Buffer.from(arrayBuffer);
+         const inputFile = InputFile.fromBuffer(buffer, fileName);
+         file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
+       }
+        */
     }
 
     // Create new patient document -> https://appwrite.io/docs/references/cloud/server-nodejs/databases#createDocument
     const newPatient = await databases.createDocument(DATABASE_ID!, PATIENT_COLLECTION_ID!, ID.unique(), {
-      identificationDocument: file?.$id ? file?.$id : null,
+      identificationDocumentId: file?.$id ? file?.$id : null,
       identificationDocumentUrl: file?.$id ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}` : null,
       ...patient,
     });

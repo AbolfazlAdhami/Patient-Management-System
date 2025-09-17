@@ -4,14 +4,14 @@
 import type { Control } from "react-hook-form";
 import type { ReactNode } from "react";
 
-// declare type SearchParamProps = {
-//   params?: Promise<any> | { [key: string]: string } | any;
-//   searchParams?: Record<string, string, string[]> | undefined;
-// };
 declare type SearchParamProps = {
-  params: { [key: string]: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params?: Promise<any> | { [key: string]: string } | any;
+  searchParams?: Record<string, string, string[]> | undefined;
 };
+// declare type SearchParamProps = {
+//   params: { [key: string]: string };
+//   searchParams: { [key: string]: string | string[] | undefined };
+// };
 
 declare type Gender = "Male" | "Female" | "Other";
 declare type Status = "pending" | "scheduled" | "cancelled";
