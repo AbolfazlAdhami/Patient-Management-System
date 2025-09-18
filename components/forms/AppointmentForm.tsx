@@ -28,7 +28,7 @@ interface AppointmentFormProps {
 
 const AppointmentForm = ({ userId, patientId, type = "create", appointment, setOpen }: AppointmentFormProps) => {
   const router = useRouter();
-  const [isLoading, setIsloading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const AppointmentFormValidation = getAppointmentSchema(type);
 
@@ -55,11 +55,68 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
       buttonLabel = "Submit Appointment";
   }
 
-  const onSubmit = async () => {};
 
+  const onSubmit = async (values: z.infer<typeof AppointmentFormValidation>) => {
+    setIsLoading(true);
+
+    let status;
+    switch (type) {
+      case "schedule":
+        status = "scheduled";
+        break;
+      case "cancel":
+        status = "cancelled";
+        break;
+      default:
+        status = "pending";
+    }
+
+    try {
+      if (type === "create" && patientId) {
+        const appointment = {
+          userId,
+          patient: patientId,
+          primaryPhysician: values.primaryPhysician,
+          schedule: new Date(values.schedule),
+          reason: values.reason!,
+          status: status as Status,
+          note: values.note,
+        };
+
+        const newAppointment = await createAppointment(appointment);
+
+        if (newAppointment) {
+          form.reset();
+          router.push(`/patients/${userId}/new-appointment/success?appointmentId=${newAppointment.$id}`);
+        }
+      } else {
+        const appointmentToUpdate = {
+          userId,
+          appointmentId: appointment?.$id!,
+          appointment: {
+            primaryPhysician: values.primaryPhysician,
+            schedule: new Date(values.schedule),
+            status: status as Status,
+            cancellationReason: values.cancellationReason,
+          },
+          type,
+        };
+
+        const updatedAppointment = await updateAppointment(appointmentToUpdate);
+
+        if (updatedAppointment) {
+          setOpen && setOpen(false);
+          form.reset();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setIsLoading(false);
+  };
   return (
     <Form {...form}>
-      <form className="flex-1 space-y-1" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="flex-1 space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
         {type === "create" && (
           <section className="mb-12 space-y-4">
             <h1 className="header">New Appointment</h1>
@@ -78,16 +135,17 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
                 </SelectItem>
               ))}
             </CustomFormField>
+            <div className={`flex flex-col  gap-6 ${type === "create" && "lg:flex-row"}`}>
+              <CustomFormField fieldType={FormFieldType.TEXTAREA} control={form.control} name="reason" label="Appointment reason" placeholder="Annual monthly check-up" disabled={type === "schedule"} />
+              <CustomFormField fieldType={FormFieldType.TEXTAREA} control={form.control} name="note" label="Comments/note" placeholder="Prefer afternoon appointments, if possible" disabled={type === "schedule"} />
+            </div>
             <CustomFormField fieldType={FormFieldType.DATE_PICKER} control={form.control} name="schedule" label="Expected appointment date" showTimeSelect dateFormat="MM/dd/yyyy - h:mm aa" />
-            <div className={`flex flex-col gap-6 ${type === "create" && "xl:flex-row"}`} />
-            <CustomFormField fieldType={FormFieldType.TEXTAREA} control={form.control} name="reason" label="Appointment reason" placeholder="Annual monthly check-up" disabled={type === "schedule"} />
-            <CustomFormField fieldType={FormFieldType.TEXTAREA} control={form.control} name="note" label="Comments/note" placeholder="Prefer afternoon appointments, if possible" disabled={type === "schedule"} />
           </>
         )}
 
         {type === "cancel" && <CustomFormField fieldType={FormFieldType.TEXTAREA} control={form.control} name="cancellationReason" label="Reason for cancellation" placeholder="Urgent meeting came up" />}
 
-        <SubmitButton isLoading={isLoading} className={`${type === "cancel" ? "shad-danger-btn" : "shadow-primary-btn"} w-full`}>
+        <SubmitButton isLoading={isLoading} className={`${type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"} w-full`}>
           {buttonLabel}
         </SubmitButton>
       </form>

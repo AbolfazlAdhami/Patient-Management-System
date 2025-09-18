@@ -18,7 +18,7 @@ import Image from "next/image";
 import FileUploader from "../FileUploader";
 import { registerPatient } from "@/lib/actions/patient.actions";
 import { toast } from "react-toastify";
-import { WarningMessages } from "@/configs/Messages";
+import { SuccessMessages, WarningMessages } from "@/configs/Messages";
 import { FormFieldType } from "@/lib/Inputs";
 
 const RegisterForm = ({ user }: { user: User }) => {
@@ -90,8 +90,10 @@ const RegisterForm = ({ user }: { user: User }) => {
         identificationDocument: identificationDocument ? formData : undefined,
       };
       const newPatient = await registerPatient(patientData);
+
       if (newPatient) {
         push(`/patients/${user.$id}/new-appointment`);
+        toast.success(SuccessMessages.register);
       }
     } catch (error) {
       console.log(error);
