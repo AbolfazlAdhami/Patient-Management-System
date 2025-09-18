@@ -39,5 +39,3 @@ export const registerInputs = ({ control }: { control: Control<any> }): Array<Cu
     iconAlt: "email",
   },
 ];
-
-//   { control, name: "", label: "", fieldType: FormFieldType.INPUT, placeholder: "", iconAlt: "", iconSrc: "" },
