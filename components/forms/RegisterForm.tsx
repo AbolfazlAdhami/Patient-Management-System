@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { z } from "zod";
 import SubmitButton from "../SubmitButton";
-import { FormFieldType } from "./PatientForm";
+
 import CustomFormField from "../CustomFormField";
 import { FormControl } from "../ui/form";
 import { SelectItem } from "../ui/select";
@@ -18,7 +18,8 @@ import Image from "next/image";
 import FileUploader from "../FileUploader";
 import { registerPatient } from "@/lib/actions/patient.actions";
 import { toast } from "react-toastify";
-import { WarningMessages } from "@/configs/Messages";
+import { SuccessMessages, WarningMessages } from "@/configs/Messages";
+import { FormFieldType } from "@/lib/Inputs";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -65,7 +66,7 @@ const RegisterForm = ({ user }: { user: User }) => {
       formData.append("fileName", values.identificationDocument[0].name);
     }
     try {
-      const patient = {
+      const patientData = {
         userId: $id,
         name,
         email,
@@ -88,9 +89,11 @@ const RegisterForm = ({ user }: { user: User }) => {
         identificationType,
         identificationDocument: identificationDocument ? formData : undefined,
       };
-      const newPatient = await registerPatient(patient);
+      const newPatient = await registerPatient(patientData);
+
       if (newPatient) {
         push(`/patients/${user.$id}/new-appointment`);
+        toast.success(SuccessMessages.register);
       }
     } catch (error) {
       console.log(error);
@@ -182,20 +185,14 @@ const RegisterForm = ({ user }: { user: User }) => {
           </div>
           {/* FAMILY MEDICATION & PAST MEDICATIONS */}
           <div className="flex flex-col gap-4 xl:flex-row">
-            <CustomFormField
-              fieldType={TEXTAREA}
-              control={control}
-              name="familyMedicalHistory"
-              label=" Family medical history (if relevant)"
-              placeholder="Mother had brain cancer, Father has hypertension"
-            />
+            <CustomFormField fieldType={TEXTAREA} control={control} name="familyMedicalHistory" label=" Family medical history (if relevant)" placeholder="Mother had brain cancer, Father has hypertension" />
             <CustomFormField fieldType={TEXTAREA} control={control} name="pastMedicalHistory" label="Past medical history" placeholder="Appendectomy in 2015, Asthma diagnosis in childhood" />
           </div>
         </section>
 
         <section className="space-y-4">
           <div className="mb-6 space-y-1">
-            <h2 className="sub-header">Identification and Verfication</h2>
+            <h2 className="sub-header">Identification and Verification</h2>
           </div>
           <CustomFormField fieldType={FormFieldType.SELECT} control={form.control} name="identificationType" label="Identification Type" placeholder="Select identification type">
             {IdentificationTypes.map((type, i) => (

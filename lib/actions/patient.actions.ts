@@ -1,20 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-import { Query, ID } from "node-appwrite";
-import { users, database, storage, BUCKET_ID, DATABASE_ID, ENDPOINT, PATIENT_COLLECTION_ID, PROJECT_ID } from "../appwrite.config";
-import { CreateUserParams, RegisterUserParams } from "@/types";
-import { parseStringify } from "../utils";
 
-// CRETE  USER
+import { Query, ID, InputFile } from "node-appwrite";
+import { BUCKET_ID, DATABASE_ID, ENDPOINT, PATIENT_COLLECTION_ID, PROJECT_ID, databases, storage, users } from "../appwrite.config";
+import { parseStringify } from "../utils";
+import { CreateUserParams, RegisterUserParams } from "@/types";
+
+// CRETE USER
 export const createUser = async (user: CreateUserParams) => {
   try {
     const newUser = await users.create(ID.unique(), user.email, user.phone, undefined, user.name);
     return parseStringify(newUser);
   } catch (error: any) {
+    //
     if (error && error?.code === 409) {
       const existingUsers = await users.list([]);
       if (existingUsers.total === 1) return existingUsers.users[0];
-      return null;
     }
+    console.error("An error occurred while creating a new user:", error);
   }
 };
 
@@ -22,24 +25,42 @@ export const createUser = async (user: CreateUserParams) => {
 export const getUser = async (userId: string) => {
   try {
     const user = await users.get(userId);
+
     return parseStringify(user);
   } catch (error) {
-    console.log(error);
+    console.log("An error occurred while retrieving the user details:", error);
   }
 };
 
-// REGISTER PTIENT
+// REGISTER PATIENT
 export const registerPatient = async ({ identificationDocument, ...patient }: RegisterUserParams) => {
   try {
     // Upload file ->  // https://appwrite.io/docs/references/cloud/client-web/storage#createFile
     let file;
     if (identificationDocument) {
-      const inputFile = identificationDocument && new File(identificationDocument.get("blobFile"), identificationDocument?.get("fileName"));
-      file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
+      const blob = identificationDocument.get("blobFile");
+      const fileName = identificationDocument?.get("fileName");
+      /*1. Use InputFile.fromBlob (correct for browser / Next.js client)
+          Appwrite provides fromBlob for exactly this:*/
+      if (blob instanceof Blob && typeof fileName == "string") {
+        const inputFile = InputFile.fromBlob(blob, fileName);
+        file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
+      }
+
+      /*2. Convert Blob → Buffer (if running in Node.js)
+            If this is server-only code (Node.js runtime), convert the blob first:
+       if (blob instanceof Blob && typeof fileName == "string") {
+         const arrayBuffer = await blob.arrayBuffer();
+         const buffer = Buffer.from(arrayBuffer);
+         const inputFile = InputFile.fromBuffer(buffer, fileName);
+         file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
+       }
+        */
     }
 
-    const newPatient = await database.createDocument(DATABASE_ID!, PATIENT_COLLECTION_ID!, ID.unique(), {
-      identificationDocument: file?.$id ? file?.$id : null,
+    // Create new patient document -> https://appwrite.io/docs/references/cloud/server-nodejs/databases#createDocument
+    const newPatient = await databases.createDocument(DATABASE_ID!, PATIENT_COLLECTION_ID!, ID.unique(), {
+      identificationDocumentId: file?.$id ? file?.$id : null,
       identificationDocumentUrl: file?.$id ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}` : null,
       ...patient,
     });
@@ -53,7 +74,9 @@ export const registerPatient = async ({ identificationDocument, ...patient }: Re
 // GET PATIENT
 export const getPatient = async (userID: string) => {
   try {
-    const patients = await database.listDocuments(DATABASE_ID!, PATIENT_COLLECTION_ID!, [Query.equal("userId", [userID])]);
+    const patients = await databases.listDocuments(DATABASE_ID!, PATIENT_COLLECTION_ID!, [Query.equal("userId", [userID])]);
+
+    if (patients.documents.length == 0) return null;
 
     return parseStringify(patients.documents[0]);
   } catch (error) {

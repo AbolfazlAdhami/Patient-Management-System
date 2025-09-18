@@ -13,21 +13,11 @@ import { CustomProps } from "@/types";
 import SubmitButton from "../SubmitButton";
 import { UserFormValidation } from "@/lib/validation";
 import { createUser } from "@/lib/actions/patient.actions";
-import { patientsInputes } from "@/lib/Inputes";
+import { patientsInputs } from "@/lib/Inputs";
 import { toast } from "react-toastify";
 import { ErrorMessages, SuccessMessages } from "@/configs/Messages";
 
-export enum FormFieldType {
-  INPUT = "input",
-  CHECKBOX = "checkbox",
-  TEXTAREA = "textarea",
-  PHONE_INPUT = "phoneInput",
-  DATE_PICKER = "datePicker",
-  SELECT = "select",
-  SKELETON = "skeleton",
-}
-
-function PatientForm() {
+const PatientForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { push } = useRouter();
   const form = useForm<z.infer<typeof UserFormValidation>>({
@@ -53,7 +43,7 @@ function PatientForm() {
     setLoading(false);
   };
 
-  const inputes: Array<CustomProps> = patientsInputes({ control: form.control });
+  const inputs: Array<CustomProps> = patientsInputs({ control: form.control });
 
   return (
     <Form {...form}>
@@ -62,13 +52,13 @@ function PatientForm() {
           <h1 className="header">Hi There 👋</h1>
           <p className="text-dark-700">Schedule your first appointment.</p>
         </section>
-        {inputes.map((props) => (
+        {inputs.map((props) => (
           <CustomFormField {...props} key={props.name} />
         ))}
         <SubmitButton isLoading={loading}>Submit</SubmitButton>
       </form>
     </Form>
   );
-}
+};
 
 export default PatientForm;
