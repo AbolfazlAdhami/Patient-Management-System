@@ -18,7 +18,7 @@ import { FormFieldType } from "@/lib/Inputs";
 import { Doctors } from "@/constant";
 import { SelectItem } from "../ui/select";
 import { Status } from "@/types";
-import { createAppointment } from "@/lib/actions/appointment.actions";
+import { createAppointment, updateAppointment } from "@/lib/actions/appointment.actions";
 
 interface AppointmentFormProps {
   userId: string;
@@ -97,12 +97,14 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
             cancellationReason: values.cancellationReason,
           },
           type,
+          timeZone: "Asia/Tehran",
         };
 
         const updatedAppointment = await updateAppointment(appointmentToUpdate);
 
         if (updatedAppointment) {
-          setOpen && setOpen(false);
+          // setOpen && setOpen(false);
+          // FIXME: Appointment Modal
           form.reset();
         }
       }

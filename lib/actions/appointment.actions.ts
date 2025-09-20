@@ -89,7 +89,7 @@ export const sendSMSNotification = async ({ userId, content }: SendSMSNotificati
 };
 
 // UPDATE APPOINTMENT
-export const updateAppointment = async ({ appointmentId, appointment, type, userId, timeZone }: UpdateAppointmentParams) => {
+export const updateAppointment = async ({ appointmentId, appointment, type, userId, timeZone = "UTC" }: UpdateAppointmentParams) => {
   try {
     // Update appointment to scheduled -> https://appwrite.io/docs/references/cloud/server-nodejs/databases#updateDocument
     const updateAppointment = await databases.updateDocument(DATABASE_ID!, APPOINTMENT_COLLECTION_ID!, appointmentId, appointment);
@@ -102,6 +102,9 @@ export const updateAppointment = async ({ appointmentId, appointment, type, user
         : `We regret to inform that your appointment for ${formatDateTime(appointment.schedule!, timeZone).dateTime} is cancelled. Reason:  ${appointment.cancellationReason}`
     }.`;
     await sendSMSNotification({ userId, content: smsMessage });
+
+    revalidatePath("/admin");
+    return parseStringify(updateAppointment);
   } catch (error) {
     console.error("An error occurred while scheduling an appointment:", error);
   }
