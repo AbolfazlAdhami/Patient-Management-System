@@ -55,7 +55,7 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
       buttonLabel = "Submit Appointment";
   }
 
-
+  // TODO: Refactor onSubmit Handler
   const onSubmit = async (values: z.infer<typeof AppointmentFormValidation>) => {
     setIsLoading(true);
 
@@ -114,6 +114,7 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
     }
     setIsLoading(false);
   };
+
   return (
     <Form {...form}>
       <form className="flex-1 space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
