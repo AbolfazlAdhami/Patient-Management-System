@@ -17,6 +17,8 @@ import CustomFormField from "../CustomFormField";
 import { FormFieldType } from "@/lib/Inputs";
 import { Doctors } from "@/constant";
 import { SelectItem } from "../ui/select";
+import { Status } from "@/types";
+import { createAppointment, updateAppointment } from "@/lib/actions/appointment.actions";
 
 interface AppointmentFormProps {
   userId: string;
@@ -55,21 +57,15 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
       buttonLabel = "Submit Appointment";
   }
 
-
+  // TODO: Refactor update and create appointment function
   const onSubmit = async (values: z.infer<typeof AppointmentFormValidation>) => {
     setIsLoading(true);
 
-    let status;
-    switch (type) {
-      case "schedule":
-        status = "scheduled";
-        break;
-      case "cancel":
-        status = "cancelled";
-        break;
-      default:
-        status = "pending";
-    }
+    const status = {
+      schedule: "scheduled",
+      cancel: "cancelled",
+      create: "pending",
+    };
 
     try {
       if (type === "create" && patientId) {
@@ -79,7 +75,7 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
           primaryPhysician: values.primaryPhysician,
           schedule: new Date(values.schedule),
           reason: values.reason!,
-          status: status as Status,
+          status: status[type] as Status,
           note: values.note,
         };
 
@@ -90,22 +86,25 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
           router.push(`/patients/${userId}/new-appointment/success?appointmentId=${newAppointment.$id}`);
         }
       } else {
+        if (!appointment) throw new Error("Appoint is Not Defined");
         const appointmentToUpdate = {
           userId,
-          appointmentId: appointment?.$id!,
+          appointmentId: appointment.$id!,
           appointment: {
             primaryPhysician: values.primaryPhysician,
             schedule: new Date(values.schedule),
-            status: status as Status,
+            status: status[type] as Status,
             cancellationReason: values.cancellationReason,
           },
           type,
+          timeZone: "Asia/Tehran",
         };
 
         const updatedAppointment = await updateAppointment(appointmentToUpdate);
 
         if (updatedAppointment) {
-          setOpen && setOpen(false);
+          // setOpen && setOpen(false);
+          // FIXME: Appointment Modal
           form.reset();
         }
       }
@@ -114,6 +113,7 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
     }
     setIsLoading(false);
   };
+
   return (
     <Form {...form}>
       <form className="flex-1 space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
