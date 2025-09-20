@@ -17,6 +17,8 @@ import CustomFormField from "../CustomFormField";
 import { FormFieldType } from "@/lib/Inputs";
 import { Doctors } from "@/constant";
 import { SelectItem } from "../ui/select";
+import { Status } from "@/types";
+import { createAppointment } from "@/lib/actions/appointment.actions";
 
 interface AppointmentFormProps {
   userId: string;
@@ -59,17 +61,11 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
   const onSubmit = async (values: z.infer<typeof AppointmentFormValidation>) => {
     setIsLoading(true);
 
-    let status;
-    switch (type) {
-      case "schedule":
-        status = "scheduled";
-        break;
-      case "cancel":
-        status = "cancelled";
-        break;
-      default:
-        status = "pending";
-    }
+    const status = {
+      schedule: "scheduled",
+      cancel: "cancelled",
+      create: "pending",
+    };
 
     try {
       if (type === "create" && patientId) {
@@ -79,7 +75,7 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
           primaryPhysician: values.primaryPhysician,
           schedule: new Date(values.schedule),
           reason: values.reason!,
-          status: status as Status,
+          status: status[type] as Status,
           note: values.note,
         };
 
@@ -90,6 +86,7 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
           router.push(`/patients/${userId}/new-appointment/success?appointmentId=${newAppointment.$id}`);
         }
       } else {
+        
         const appointmentToUpdate = {
           userId,
           appointmentId: appointment?.$id!,
