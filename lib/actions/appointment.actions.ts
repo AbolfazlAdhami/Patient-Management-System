@@ -77,7 +77,7 @@ type SendSMSNotificationParams = {
   content: string;
 };
 
-const sendSMSNotification = async ({ userId, content }: SendSMSNotificationParams) => {
+export const sendSMSNotification = async ({ userId, content }: SendSMSNotificationParams) => {
   try {
     // https://appwrite.io/docs/references/1.5.x/server-nodejs/messaging#createSms
     const message = await messaging.createSms(ID.unique(), content, [], [userId]);
