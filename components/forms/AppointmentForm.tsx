@@ -57,7 +57,6 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
       buttonLabel = "Submit Appointment";
   }
 
-  // TODO: Refactor update and create appointment function
   const onSubmit = async (values: z.infer<typeof AppointmentFormValidation>) => {
     setIsLoading(true);
 
@@ -85,29 +84,33 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
           form.reset();
           router.push(`/patients/${userId}/new-appointment/success?appointmentId=${newAppointment.$id}`);
         }
-      } else {
-        if (!appointment) throw new Error("Appoint is Not Defined");
-        const appointmentToUpdate = {
-          userId,
-          appointmentId: appointment.$id!,
-          appointment: {
-            primaryPhysician: values.primaryPhysician,
-            schedule: new Date(values.schedule),
-            status: status[type] as Status,
-            cancellationReason: values.cancellationReason,
-          },
-          type,
-          timeZone: "Asia/Tehran",
-        };
-
-        const updatedAppointment = await updateAppointment(appointmentToUpdate);
-
-        if (updatedAppointment) {
-          // setOpen && setOpen(false);
-          // FIXME: Appointment Modal
-          form.reset();
-        }
+        return;
       }
+
+
+      if (!appointment) throw new Error("Appoint is Not Defined");
+      const appointmentToUpdate = {
+        userId,
+        appointmentId: appointment.$id!,
+        appointment: {
+          primaryPhysician: values.primaryPhysician,
+          schedule: new Date(values.schedule),
+          status: status[type] as Status,
+          cancellationReason: values.cancellationReason,
+        },
+        type,
+        timeZone: "Asia/Tehran",
+      };
+
+      const updatedAppointment = await updateAppointment(appointmentToUpdate);
+
+      if (updatedAppointment) {
+        // setOpen && setOpen(false);
+        // FIXME: Appointment Modal
+        form.reset();
+      }
+
+
     } catch (error) {
       console.log(error);
     }
