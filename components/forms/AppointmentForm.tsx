@@ -1,24 +1,26 @@
 "use client";
 
 import { Dispatch, SetStateAction, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 
+import { createAppointment, updateAppointment } from "@/lib/actions/appointment.actions";
 import { getAppointmentSchema } from "@/lib/validation";
 import { Appointment } from "@/types/appwrite.types";
-import { Form } from "../ui/form";
-import SubmitButton from "../SubmitButton";
+
 import CustomFormField from "../CustomFormField";
 import { FormFieldType } from "@/lib/Inputs";
-import { Doctors } from "@/constant";
+import SubmitButton from "../SubmitButton";
 import { SelectItem } from "../ui/select";
+import { Form } from "../ui/form";
+
+import { Doctors } from "@/constant";
 import { Status } from "@/types";
-import { createAppointment, updateAppointment } from "@/lib/actions/appointment.actions";
 
 interface AppointmentFormProps {
   userId: string;
@@ -27,6 +29,9 @@ interface AppointmentFormProps {
   appointment?: Appointment;
   setOpen?: Dispatch<SetStateAction<boolean>>;
 }
+
+import { SuccessMessages, WarningMessages } from "@/configs/Messages";
+import { toast } from "react-toastify";
 
 const AppointmentForm = ({ userId, patientId, type = "create", appointment, setOpen }: AppointmentFormProps) => {
   const router = useRouter();
@@ -79,14 +84,13 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
         };
 
         const newAppointment = await createAppointment(appointment);
-
+        toast.success(SuccessMessages.success);
         if (newAppointment) {
           form.reset();
           router.push(`/patients/${userId}/new-appointment/success?appointmentId=${newAppointment.$id}`);
         }
         return;
       }
-
 
       if (!appointment) throw new Error("Appoint is Not Defined");
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -105,16 +109,16 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
       };
 
       const updatedAppointment = await updateAppointment(appointmentToUpdate);
+      toast.success(SuccessMessages.updated);
 
       if (updatedAppointment) {
         // setOpen && setOpen(false);
         // FIXME: Appointment Modal
         form.reset();
       }
-
-
     } catch (error) {
       console.log(error);
+      toast.error(WarningMessages.tryAgain);
     }
     setIsLoading(false);
   };
