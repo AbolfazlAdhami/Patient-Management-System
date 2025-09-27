@@ -89,6 +89,8 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
 
 
       if (!appointment) throw new Error("Appoint is Not Defined");
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      console.log(timeZone);
       const appointmentToUpdate = {
         userId,
         appointmentId: appointment.$id!,
@@ -99,7 +101,7 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
           cancellationReason: values.cancellationReason,
         },
         type,
-        timeZone: "Asia/Tehran",
+        timeZone,
       };
 
       const updatedAppointment = await updateAppointment(appointmentToUpdate);
