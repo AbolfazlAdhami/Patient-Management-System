@@ -18,7 +18,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   switch (fieldType) {
     case INPUT:
       return (
-        <div className="flex rounded-lg  border border-dark-500 bg-dark-400">
+        <div className="flex rounded-[6px]  border border-dark-500 bg-dark-400">
           {iconSrc && <Image src={iconSrc} height={24} width={24} alt={iconAlt ?? "icon"} className="ml-2" />}
           <FormControl>
             <Input placeholder={placeholder} {...field} className="shad-input border-0" />
