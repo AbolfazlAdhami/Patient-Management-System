@@ -50,7 +50,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       );
     case DATE_PICKER:
       return (
-        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+        <div className="flex rounded-[6px] border border-dark-500 bg-dark-400">
           <Image src="/assets/icons/calendar.svg" height={24} width={24} alt="calender" className="ml-2" />
           <FormControl>
             <ReactDatePicker
@@ -70,7 +70,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
               <SelectTrigger className="shad-select-trigger">
-                <SelectValue placeholder={props.placeholder} />
+                <SelectValue  placeholder={props.placeholder} />
               </SelectTrigger>
             </FormControl>
             <SelectContent className="shad-select-content">{props.children}</SelectContent>
