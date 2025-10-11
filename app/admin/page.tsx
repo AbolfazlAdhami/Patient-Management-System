@@ -4,6 +4,7 @@ import { getRecentAppointment } from "@/lib/actions/appointment.actions";
 import Link from "next/link";
 import Image from "next/image";
 import { StatCard } from "@/components/StatCard";
+import { DataTable } from "@/components/table/DataTable";
 
 const AdminPage = async () => {
   const appointments = await getRecentAppointment();
