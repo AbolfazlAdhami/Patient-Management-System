@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
@@ -7,9 +8,8 @@ import { Doctors } from "@/constant";
 import { formatDateTime } from "@/lib/utils";
 import { Appointment } from "@/types/appwrite.types";
 
-// import { AppointmentModal } from "../AppointmentModal";
+import AppointmentModal from "../AppointmentModal";
 import { StatusBadge } from "../StatusBadge";
- 
 
 export const columns: ColumnDef<Appointment>[] = [
   { header: "#", cell: ({ row }) => <p className="text-14-medium">{row.index + 1}</p> },
@@ -50,7 +50,7 @@ export const columns: ColumnDef<Appointment>[] = [
 
       return (
         <div className="flex items-center gap-3">
-          <Image src={doctor?.image} alt="docter" width={100} height={100} className="size-8" />
+          {doctor?.image && <Image src={doctor.image} alt="docter" width={100} height={100} className="size-8" />}
           <p className="whitespace-nowrap">Dr. {doctor?.name}</p>
         </div>
       );
@@ -63,12 +63,24 @@ export const columns: ColumnDef<Appointment>[] = [
       const appointment = row.original;
       return (
         <div className="flex gap-1">
-          {/* <AppointmentModal/>
-        <AppointmentModal/> */}
+          <AppointmentModal
+            appointment={appointment}
+            patientId={appointment.patient.$id}
+            userId={appointment.userId}
+            type="schedule"
+            title="Schedule Appointment"
+            description="Please confirm the following details to schedule."
+          />
+          <AppointmentModal
+            appointment={appointment}
+            patientId={appointment.patient.$id}
+            userId={appointment.userId}
+            type="cancel"
+            title="Cancel Appointment"
+            description="Are you sure you want to cancel your appointment?"
+          />
         </div>
       );
     },
   },
 ];
-
-

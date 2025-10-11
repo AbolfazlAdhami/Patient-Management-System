@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-
 import { createAppointment, updateAppointment } from "@/lib/actions/appointment.actions";
 import { getAppointmentSchema } from "@/lib/validation";
 import { Appointment } from "@/types/appwrite.types";
@@ -33,8 +32,6 @@ interface AppointmentFormProps {
 import { SuccessMessages, WarningMessages } from "@/configs/Messages";
 import { toast } from "react-toastify";
 
-
-// FIXME : 'setOpen' is defined but never used.
 const AppointmentForm = ({ userId, patientId, type = "create", appointment, setOpen }: AppointmentFormProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -113,9 +110,8 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
       const updatedAppointment = await updateAppointment(appointmentToUpdate);
       toast.success(SuccessMessages.updated);
 
-      if (updatedAppointment) {
-        // setOpen && setOpen(false);
-        // FIXME: Appointment Modal
+      if (updatedAppointment && setOpen) {
+        setOpen(false);
         form.reset();
       }
     } catch (error) {
