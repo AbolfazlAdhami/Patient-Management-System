@@ -14,19 +14,13 @@ const PasskeyModal = () => {
   const [passkey, setPasskey] = useState<string>("");
   const [error, setError] = useState("");
 
-  const encryptedKey = typeof window !== "undefined" ? window.localStorage.getItem("accessKey") : null;
+  // const encryptedKey = typeof window !== "undefined" ? window.localStorage.getItem("accessKey") : null;
 
   useEffect(() => {
-    const accessKey = encryptedKey && decryptKey(encryptedKey);
     if (path) {
-      if (accessKey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY!.toString()) {
-        setOpen(false);
-        router.push("/admin");
-      } else {
-        setOpen(true);
-      }
+      setOpen(true);
     }
-  }, [encryptedKey, path, router]);
+  }, [path, router]);
 
   const closeModal = () => {
     setOpen(false);
@@ -49,25 +43,26 @@ const PasskeyModal = () => {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogContent className="shad-alert-dialog">
+      <AlertDialogContent className="shad-alert-dialog ">
         <AlertDialogHeader>
-          <AlertDialogTitle>
+          <AlertDialogTitle className="flex items-start justify-between">
             Admin Access Verification
             <Image src="/assets/icons/close.svg" alt="close" width={20} height={20} onClick={() => closeModal()} className="cursor-pointer" />
           </AlertDialogTitle>
           <AlertDialogDescription>To access the admin page, please enter the passkey.</AlertDialogDescription>
         </AlertDialogHeader>
         <div>
-          <InputOTP maxLength={6} value={passkey} onChange={(value: string) => setPasskey(value)}>
+          <InputOTP className="bl" maxLength={6} value={passkey} onChange={(value) => setPasskey(value)}>
             <InputOTPGroup className="shad-otp">
-              <InputOTPSlot index={0} className="shad-otp-slot" />
-              <InputOTPSlot index={1} className="shad-otp-slot" />
-              <InputOTPSlot index={2} className="shad-otp-slot" />
-              <InputOTPSlot index={3} className="shad-otp-slot" />
-              <InputOTPSlot index={4} className="shad-otp-slot" />
-              <InputOTPSlot index={5} className="shad-otp-slot" />
+              <InputOTPSlot className="shad-otp-slot" index={0} />
+              <InputOTPSlot className="shad-otp-slot" index={1} />
+              <InputOTPSlot className="shad-otp-slot" index={2} />
+              <InputOTPSlot className="shad-otp-slot" index={3} />
+              <InputOTPSlot className="shad-otp-slot" index={4} />
+              <InputOTPSlot className="shad-otp-slot" index={5} />
             </InputOTPGroup>
           </InputOTP>
+
           {error && <p className="shad-error text-14-regular mt-4 flex justify-center">{error}</p>}
         </div>
         <AlertDialogFooter>

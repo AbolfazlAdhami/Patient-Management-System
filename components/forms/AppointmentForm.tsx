@@ -1,24 +1,25 @@
 "use client";
 
 import { Dispatch, SetStateAction, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-
+import { createAppointment, updateAppointment } from "@/lib/actions/appointment.actions";
 import { getAppointmentSchema } from "@/lib/validation";
 import { Appointment } from "@/types/appwrite.types";
-import { Form } from "../ui/form";
-import SubmitButton from "../SubmitButton";
+
 import CustomFormField from "../CustomFormField";
 import { FormFieldType } from "@/lib/Inputs";
-import { Doctors } from "@/constant";
+import SubmitButton from "../SubmitButton";
 import { SelectItem } from "../ui/select";
+import { Form } from "../ui/form";
+
+import { Doctors } from "@/constant";
 import { Status } from "@/types";
-import { createAppointment, updateAppointment } from "@/lib/actions/appointment.actions";
 
 interface AppointmentFormProps {
   userId: string;
@@ -27,6 +28,9 @@ interface AppointmentFormProps {
   appointment?: Appointment;
   setOpen?: Dispatch<SetStateAction<boolean>>;
 }
+
+import { SuccessMessages, WarningMessages } from "@/configs/Messages";
+import { toast } from "react-toastify";
 
 const AppointmentForm = ({ userId, patientId, type = "create", appointment, setOpen }: AppointmentFormProps) => {
   const router = useRouter();
@@ -79,7 +83,7 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
         };
 
         const newAppointment = await createAppointment(appointment);
-
+        toast.success(SuccessMessages.success);
         if (newAppointment) {
           form.reset();
           router.push(`/patients/${userId}/new-appointment/success?appointmentId=${newAppointment.$id}`);
@@ -87,8 +91,9 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
         return;
       }
 
-
       if (!appointment) throw new Error("Appoint is Not Defined");
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      console.log(timeZone);
       const appointmentToUpdate = {
         userId,
         appointmentId: appointment.$id!,
@@ -99,39 +104,38 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
           cancellationReason: values.cancellationReason,
         },
         type,
-        timeZone: "Asia/Tehran",
+        timeZone,
       };
 
       const updatedAppointment = await updateAppointment(appointmentToUpdate);
+      toast.success(SuccessMessages.updated);
 
-      if (updatedAppointment) {
-        // setOpen && setOpen(false);
-        // FIXME: Appointment Modal
+      if (updatedAppointment && setOpen) {
+        setOpen(false);
         form.reset();
       }
-
-
     } catch (error) {
       console.log(error);
+      toast.error(WarningMessages.tryAgain);
     }
     setIsLoading(false);
   };
 
   return (
     <Form {...form}>
-      <form className="flex-1 space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="flex-1 space-y-10" onSubmit={form.handleSubmit(onSubmit)}>
         {type === "create" && (
-          <section className="mb-12 space-y-4">
+          <section className="mb-12 space-y-2">
             <h1 className="header">New Appointment</h1>
-            <p className="text-dark-400">Request a new appointment in 10 seconds.</p>
+            <p className="text-dark-600 text-sm">Request a new appointment in 10 seconds.</p>
           </section>
         )}
         {type !== "cancel" && (
           <>
             <CustomFormField fieldType={FormFieldType.SELECT} control={form.control} name="primaryPhysician" label="Doctor" placeholder="Select a doctor">
               {Doctors.map((doctor, i) => (
-                <SelectItem key={doctor.name + i} value={doctor.name}>
-                  <div className="flex cursor-pointer items-center gap-2">
+                <SelectItem key={doctor.name + i} className="hover:bg-dark-400" value={doctor.name}>
+                  <div className="flex cursor-pointer  items-center gap-2">
                     <Image src={doctor.image} width={32} height={32} alt="doctor" className="rounded-full border border-dark-500" />
                     <p>{doctor.name}</p>
                   </div>
@@ -148,7 +152,7 @@ const AppointmentForm = ({ userId, patientId, type = "create", appointment, setO
 
         {type === "cancel" && <CustomFormField fieldType={FormFieldType.TEXTAREA} control={form.control} name="cancellationReason" label="Reason for cancellation" placeholder="Urgent meeting came up" />}
 
-        <SubmitButton isLoading={isLoading} className={`${type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"} w-full`}>
+        <SubmitButton isLoading={isLoading} className={`${type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"} w-full mt-12 `}>
           {buttonLabel}
         </SubmitButton>
       </form>
