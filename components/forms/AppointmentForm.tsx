@@ -33,6 +33,8 @@ interface AppointmentFormProps {
 import { SuccessMessages, WarningMessages } from "@/configs/Messages";
 import { toast } from "react-toastify";
 
+
+// FIXME : 'setOpen' is defined but never used.
 const AppointmentForm = ({ userId, patientId, type = "create", appointment, setOpen }: AppointmentFormProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
