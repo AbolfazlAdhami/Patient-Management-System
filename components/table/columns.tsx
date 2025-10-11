@@ -3,11 +3,11 @@ import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 
-import { Doctors } from "@/constants";
+import { Doctors } from "@/constant";
 import { formatDateTime } from "@/lib/utils";
 import { Appointment } from "@/types/appwrite.types";
 
-import { AppointmentModal } from "../AppointmentModal";
+// import { AppointmentModal } from "../AppointmentModal";
 import { StatusBadge } from "../StatusBadge";
  
 
@@ -61,10 +61,12 @@ export const columns: ColumnDef<Appointment>[] = [
     header: () => <div className="pl-4">Actions</div>,
     cell: ({ row }) => {
       const appointment = row.original;
-      return <div className="flex gap-1">
-        <AppointmentModal/>
-        <AppointmentModal/>
-      </div>;
+      return (
+        <div className="flex gap-1">
+          {/* <AppointmentModal/>
+        <AppointmentModal/> */}
+        </div>
+      );
     },
   },
 ];
