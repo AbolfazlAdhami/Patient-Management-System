@@ -239,7 +239,7 @@
   }
 
   .shad-table {
-    @apply rounded-lg overflow-hidden !important;
+    @apply !rounded-xl overflow-hidden !important;
   }
 
   .shad-table-row-header {
@@ -247,7 +247,7 @@
   }
 
   .shad-table-row {
-    @apply border-b border-dark-400 text-light-200 !important;
+    @apply border-b border-dark-400 odd:bg-dark-300 odd:hover:bg-dark-400 even:bg-dark-400   even:hover:bg-dark-300 text-light-200 !important;
   }
 
   .shad-otp {

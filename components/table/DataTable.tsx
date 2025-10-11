@@ -16,12 +16,12 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({ data, columns }: DataTableProps<TData, TValue>) {
   const encryptedKey = typeof window !== "undefined" ? window.localStorage.getItem("accessKey") : null;
 
-  useEffect(() => {
-    const accessKey = encryptedKey && decryptKey(encryptedKey);
-    if (accessKey !== process.env.NEXT_PUBLIC_ADMIN_PASSKEY!.toString()) {
-      redirect("/");
-    }
-  }, [encryptedKey]);
+  // useEffect(() => {
+  //   const accessKey = encryptedKey && decryptKey(encryptedKey);
+  //   if (accessKey !== process.env.NEXT_PUBLIC_ADMIN_PASSKEY!.toString()) {
+  //     redirect("/");
+  //   }
+  // }, [encryptedKey]);
 
   const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel(), getPaginationRowModel: getPaginationRowModel() });
 
@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({ data, columns }: DataTableProps<TData
         </TableBody>
       </Table>
 
-      <div className="table-action">
+      <div className="table-actions">
         <Button className="shad-gray-btn" variant={"outline"} onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
           <Image src="/assets/icons/arrow.svg" width={24} height={24} alt="arrow" />
         </Button>

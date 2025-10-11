@@ -22,6 +22,14 @@ export const columns: ColumnDef<Appointment>[] = [
     },
   },
   {
+    accessorKey: "schedule",
+    header: "Appointment",
+    cell: ({ row }) => {
+      const appointment = row.original;
+      return <p className="text-14-regular min-w-[100px]">{formatDateTime(appointment.schedule).dateTime}</p>;
+    },
+  },
+  {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
@@ -31,14 +39,6 @@ export const columns: ColumnDef<Appointment>[] = [
           <StatusBadge status={appointment.status} />
         </div>
       );
-    },
-  },
-  {
-    accessorKey: "schedule",
-    header: "Appointment",
-    cell: ({ row }) => {
-      const appointment = row.original;
-      return <p className="text-14-regular min-w-[100px]">{formatDateTime(appointment.schedule).dateTime}</p>;
     },
   },
   {
