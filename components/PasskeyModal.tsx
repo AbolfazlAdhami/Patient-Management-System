@@ -10,13 +10,14 @@ import { decryptKey, encryptKey } from "@/lib/utils";
 const PasskeyModal = () => {
   const router = useRouter();
   const path = usePathname();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [passkey, setPasskey] = useState<string>("");
   const [error, setError] = useState("");
 
   const encryptedKey = useMemo(() => (typeof window !== "undefined" ? window.localStorage.getItem("accessKey") : null), []);
 
   useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_ADMIN_PASSKEY);
     if (!path || !encryptedKey) return;
 
     const accessKey = decryptKey(encryptedKey);
