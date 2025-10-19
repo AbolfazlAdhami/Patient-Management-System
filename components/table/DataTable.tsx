@@ -19,10 +19,9 @@ export function DataTable<TData, TValue>({ data, columns }: DataTableProps<TData
   useEffect(() => {
     const accessKey = encryptedKey && decryptKey(encryptedKey);
     console.log(accessKey, process.env.NEXT_PUBLIC_ADMIN_PASSKEY);
-    // FIXME : fix accessKey and  ADMIN_PASSKEY
-    // if (accessKey !== process.env.NEXT_PUBLIC_ADMIN_PASSKEY!.toString()) {
-    //   redirect("/");
-    // }
+    if (accessKey !== process.env.NEXT_PUBLIC_ADMIN_PASSKEY!.toString()) {
+      redirect("/");
+    }
   }, [encryptedKey]);
 
   const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel(), getPaginationRowModel: getPaginationRowModel() });

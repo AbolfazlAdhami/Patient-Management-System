@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -10,17 +10,26 @@ import { decryptKey, encryptKey } from "@/lib/utils";
 const PasskeyModal = () => {
   const router = useRouter();
   const path = usePathname();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [passkey, setPasskey] = useState<string>("");
   const [error, setError] = useState("");
 
-  // const encryptedKey = typeof window !== "undefined" ? window.localStorage.getItem("accessKey") : null;
+  const encryptedKey = useMemo(() => (typeof window !== "undefined" ? window.localStorage.getItem("accessKey") : null), []);
 
   useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_ADMIN_PASSKEY);
+    if (!path || !encryptedKey) return;
+
+    const accessKey = decryptKey(encryptedKey);
+    const adminPass = process.env.NEXT_PUBLIC_ADMIN_PASSKEY?.toString();
+
     if (path) {
-      setOpen(true);
+      if (adminPass && accessKey && accessKey == adminPass) {
+        setOpen(true);
+        router.push("/admin");
+      }
     }
-  }, [path, router]);
+  }, [encryptedKey, path, router]);
 
   const closeModal = () => {
     setOpen(false);
@@ -32,9 +41,8 @@ const PasskeyModal = () => {
 
     if (passkey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
       const encryptedKey = encryptKey(passkey);
-
       localStorage.setItem("accessKey", encryptedKey);
-
+      router.push("/admin");
       setOpen(false);
       return;
     }
